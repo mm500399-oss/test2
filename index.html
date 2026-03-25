@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Financial Bot</title>
+</head>
+
+<body style="font-family: Arial;">
+
+  <h2>💲 Financial Bot</h2>
+
+  <div id="chat" style="border:1px solid #ccc; height:250px; overflow:auto; padding:10px;">
+    <p><b>Bot:</b> Ask me about money, saving, investing, or budgeting!</p>
+  </div>
+
+  <input id="input" type="text" placeholder="Type a question..." style="width:60%;">
+  <button onclick="send()">Send</button>
+  <button onclick="startQuiz()">Start Quiz</button>
+
+  <div id="quiz" style="margin-top:20px;"></div>
+
+  <script>
+    function send() {
+      let input = document.getElementById("input");
+      let text = input.value.toLowerCase();
+      if (text === "") return;
+
+      add("You", text);
+      input.value = "";
+
+      let reply = "I can tell you about saving, investing, budgeting, or stocks.";
+
+      if (text.includes("invest")) {
+        reply = "Investing is putting money into things like stocks to grow it.";
+      }
+      else if (text.includes("budget")) {
+        reply = "A way to track income and expenses.  For example, Bob overspends every month and doesn't have any money to himself so he started using the 50/30/20 rule to budget his money and buy his wants ";
+      }
+      else if (text.includes("saving")) {
+        reply = "Saving means setting money aside for future use.  Bob";
+      }
+      else if (text.includes("stock")) {
+        reply = "Stocks are shares of a company you can buy and sell.  For example, Bob wants to buy a stock on a failing company, due to his investment he can make money or lose it.";
+      }
+
+      setTimeout(() => add("Bot", reply), 500);
+    }
+
+    function add(sender, message) {
+      let chat = document.getElementById("chat");
+      chat.innerHTML += `<p><b>${sender}:</b> ${message}</p>`;
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    //  MULTIPLE CHOICE QUIZ
+    let correctAnswer = 0;
+
+    function startQuiz() {
+      const quizDiv = document.getElementById("quiz");
+
+      const question = "What is a budget?";
+      const options = [
+        "A way to track income and expenses",
+        "A type of stock",
+        "A loan from a bank",
+        "A savings account"
+      ];
+
+      correctAnswer = 0; // index of correct answer
+
+      let html = `<h3>Finance Quiz</h3>`;
+      html += `<p>${question}</p>`;
+
+      options.forEach((opt, i) => {
+        html += `
+          <label>
+            <input type="radio" name="quizOption" value="${i}">
+            ${opt}
+          </label><br>
+        `;
+      });
+
+      html += `<br><button onclick="submitQuiz()">Submit Answer</button>`;
+      html += `<p id="result"></p>`;
+
+      quizDiv.innerHTML = html;
+    }
+
+    function submitQuiz() {
+      const selected = document.querySelector('input[name="quizOption"]:checked');
+      const result = document.getElementById("result");
+
+      if (!selected) {
+        result.innerHTML = "Please select an answer.";
+        return;
+      }
+
+      if (parseInt(selected.value) === correctAnswer) {
+        result.innerHTML = "<b>Correct!</b>";
+      } else {
+        result.innerHTML = "<b>Wrong answer.</b>";
+      }
+    }
+  </script>
+<script>
+  // MULTI-QUESTION QUIZ
+  let quizIndex = 0;
+  let score = 0;
+
+  const quizData = [
+    {
+      question: "What is a budget?",
+      options: [
+        "A way to track income and expenses",
+        "A type of stock",
+        "A loan from a bank",
+        "A savings account"
+      ],
+      answer: 0
+    },
+    {
+      question: "What is investing?",
+      options: [
+        "Spending money quickly",
+        "Putting money into assets to grow it",
+        "Borrowing money",
+        "Hiding money at home"
+      ],
+      answer: 1
+    },
+    {
+      question: "What is saving?",
+      options: [
+        "Spending all your money",
+        "Setting money aside for future use",
+        "Buying stocks",
+        "Taking loans"
+      ],
+      answer: 1
+    },
+    {
+      question: "What are stocks?",
+      options: [
+        "A type of budget",
+        "Money you save",
+        "Shares of a company you can buy and sell",
+        "Bank loans"
+      ],
+      answer: 2
+    }
+  ];
+
+  function startQuiz() {
+    quizIndex = 0;
+    score = 0;
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const quizDiv = document.getElementById("quiz");
+    const current = quizData[quizIndex];
+
+    let html = `<h3>Finance Quiz</h3>`;
+    html += `<p>${current.question}</p>`;
+
+    current.options.forEach((opt, i) => {
+      html += `
+        <label>
+          <input type="radio" name="quizOption" value="${i}">
+          ${opt}
+        </label><br>
+      `;
+    });
+
+    html += `<br><button onclick="submitQuiz()">Submit Answer</button>`;
+    html += `<p id="result"></p>`;
+
+    quizDiv.innerHTML = html;
+  }
+
+  function submitQuiz() {
+    const selected = document.querySelector('input[name="quizOption"]:checked');
+    const result = document.getElementById("result");
+
+    if (!selected) {
+      result.innerHTML = "Please select an answer.";
+      return;
+    }
+
+    if (parseInt(selected.value) === quizData[quizIndex].answer) {
+      score++;
+      result.innerHTML = "<b>Correct!</b>";
+    } else {
+      result.innerHTML = "<b>Wrong answer.</b>";
+    }
+
+    quizIndex++;
+
+    setTimeout(() => {
+      if (quizIndex < quizData.length) {
+        showQuestion();
+      } else {
+        showFinalScore();
+      }
+    }, 1000);
+  }
+
+  function showFinalScore() {
+    const quizDiv = document.getElementById("quiz");
+    quizDiv.innerHTML = `
+      <h3>Quiz Finished!</h3>
+      <p>Your score: ${score} / ${quizData.length}</p>
+      <button onclick="startQuiz()">Try Again</button>
+    `;
+  }
+</script>
+
+
+</body>
+</html>
